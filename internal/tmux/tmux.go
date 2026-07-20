@@ -2,7 +2,7 @@ package tmux
 
 import (
 	"fmt"
-	"muxt/internal/config"
+	"muxt/internal/utils"
 )
 
 
@@ -12,7 +12,7 @@ func splitWindow(session, root, direction string, size int64, window any) error 
 	}
 
 	command := []string{"tmux", "split-window", "-c", root, "-t", fmt.Sprintf("%v:%v", session, window), direction, "-p", fmt.Sprintf("%v", size)};
-    err := config.RunExternalCommand(command...);
+    err := utils.RunExternalCommand(command...);
     if err != nil {
         return err;
     }
@@ -24,7 +24,7 @@ func newWindow(session, name, root string, attach bool) error {
 	if attach {
 		command = append(command, "-d");
 	}
-    err := config.RunExternalCommand(command...);
+    err := utils.RunExternalCommand(command...);
     if err != nil {
         return err;
     }
@@ -33,7 +33,7 @@ func newWindow(session, name, root string, attach bool) error {
 
 func renameWindow(session, name string, idx any) error {
 	command := []string{"tmux", "rename-window", "-t", fmt.Sprintf("%v:%v", session, idx), name};
-    err := config.RunExternalCommand(command...);
+    err := utils.RunExternalCommand(command...);
     if err != nil {
         return err;
     }
@@ -42,7 +42,7 @@ func renameWindow(session, name string, idx any) error {
 
 func sendKeys(session string, window any, paneIndex int, keys string) error {
     command := []string{"tmux", "send-keys", "-t", fmt.Sprintf("%v:%v.%v", session, window, paneIndex), keys, "C-m"};
-    err := config.RunExternalCommand(command...);
+    err := utils.RunExternalCommand(command...);
     if err != nil {
         return err;
     }

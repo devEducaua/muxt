@@ -2,6 +2,7 @@ package tmux
 
 import (
 	"muxt/internal/config"
+	"muxt/internal/utils"
 )
 
 func LayoutToTmux(layout config.Layout) error {
@@ -10,13 +11,13 @@ func LayoutToTmux(layout config.Layout) error {
 		return err;
 	}
 
-	root, err := config.ExpandTilde(layout.Root);
+	root, err := utils.ExpandTilde(layout.Root);
 	if err != nil {
 		return err;
 	}
 
 	// TODO: verify if session is running before this, and go to he.
-	err = config.RunExternalCommand("tmux", "new-session", "-d", "-c", root, "-s", layout.Name);
+	err = utils.RunExternalCommand("tmux", "new-session", "-d", "-c", root, "-s", layout.Name);
 	if err != nil {
 		return err;
 	}
@@ -29,7 +30,7 @@ func LayoutToTmux(layout config.Layout) error {
 			if propRoot, ok := w.Panes[0].Props["root"]; ok {
 				paneRoot = propRoot.(string);
 			}
-			paneRoot, err = config.ExpandTilde(paneRoot);
+			paneRoot, err = utils.ExpandTilde(paneRoot);
 			if err != nil {
 				return err;
 			}
@@ -52,7 +53,7 @@ func LayoutToTmux(layout config.Layout) error {
 					size = propSize.(int64);
 				}
 
-				paneRoot, err := config.ExpandTilde(p.Props["root"].(string));
+				paneRoot, err := utils.ExpandTilde(p.Props["root"].(string));
 				if err != nil {
 					return err;
 				}

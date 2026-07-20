@@ -1,4 +1,4 @@
-package config
+package utils
 
 import (
 	"errors"
@@ -6,28 +6,12 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"muxt/internal/config"
 )
 
-func GetBaseDir() (string, error) {
-	xdg := os.Getenv("XDG_CONFIG_HOME");
-
-	if xdg == "" {
-		home, err := os.UserHomeDir();
-		if err != nil {
-			return "", err;
-		}
-		xdg = filepath.Join(home, ".config");
-	}
-	path := filepath.Join(xdg, "muxt")
-	if err := os.MkdirAll(path, 0755); err != nil {
-		return "", err;
-	}
-
-	return path, nil;
-}
 
 func GetLayoutsDir() (string, error) {
-	base, err := GetBaseDir();
+	base, err := config.GetBaseDir();
 	if err != nil {
 		return "", err;
 	}
@@ -83,5 +67,21 @@ func RunExternalCommand(args ...string) error {
 		return err;
 	}
 	return nil;
+}
+
+func FileExistsInDir(filename, dirPath string) (bool, error) {
+	dirs, err := os.ReadDir(dirPath);
+	if err != nil {
+		return false,err;
+	}
+
+	exists := false;
+	for _,e := range dirs {
+		if e.Name() == filename {
+			exists = true;
+		}
+	}
+
+	return exists, nil;
 }
 

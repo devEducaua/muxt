@@ -50,3 +50,30 @@ func parseConfig(path string) (Config, error) {
 	return c, nil;
 }
 
+func GetBaseDir() (string, error) {
+	xdg := os.Getenv("XDG_CONFIG_HOME");
+
+	if xdg == "" {
+		home, err := os.UserHomeDir();
+		if err != nil {
+			return "", err;
+		}
+		xdg = filepath.Join(home, ".config");
+	}
+	path := filepath.Join(xdg, "muxt")
+	if err := os.MkdirAll(path, 0755); err != nil {
+		return "", err;
+	}
+
+	return path, nil;
+}
+
+func GetLayoutsDir() (string, error) {
+	base, err := GetBaseDir();
+	if err != nil {
+		return "", err;
+	}
+	p := filepath.Join(base, "layouts/");
+	return p, nil;
+}
+
