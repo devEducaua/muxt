@@ -1,16 +1,8 @@
 
-# muxt/must
+# muxt
 
-```sh
-muxt new <layout-name> 
-muxt open <layout-name>
-muxt edit <layout-name>
-```
+a tool to provide a declarative tmux experience.
 
-layouts file: layouts.yml
-
-# TODO
-
-- layouts: path, window, panes and etc
-- base layouts: window, panes and etc, and will be running some commands based on that.
+## docs
+coming soon
 
