@@ -1,4 +1,2 @@
 github.com/sblinch/kdl-go v0.0.0-20260121213736-8b7053306ca6 h1:JsjzqC6ymELkN4XlTjZPSahSAem21GySugLbKz6uF5E=
 github.com/sblinch/kdl-go v0.0.0-20260121213736-8b7053306ca6/go.mod h1:b3oNGuAKOQzhsCKmuLc/urEOPzgHj6fB8vl8bwTBh28=
-go.yaml.in/yaml/v4 v4.0.0-rc.6 h1:1h7H1ohdUh93/FyE4YaDa1Zh64K6VVbjF4K6WUxMtH4=
-go.yaml.in/yaml/v4 v4.0.0-rc.6/go.mod h1:aZqd9kCMsGL7AuUv/m/PvWLdg5sjJsZ4oHDEnfPPfY0=

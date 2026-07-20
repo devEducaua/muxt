@@ -3,12 +3,11 @@ package config
 import (
 	"os"
 	"path/filepath"
-
-	"go.yaml.in/yaml/v4"
+	kdl "github.com/sblinch/kdl-go"
 )
 
 type Config struct {
-	BaseIndex int `yaml:"base-index"`
+	BaseIndex int `kdl:"base-index"`
 }
 
 func GetConfig() (Config, error) {
@@ -21,7 +20,7 @@ func GetConfig() (Config, error) {
 		BaseIndex: 1, 
 	}
 
-	configPath := filepath.Join(base, "config.yaml");
+	configPath := filepath.Join(base, "config.kdl");
 	fileConfig, err := parseConfig(configPath);
 	if err != nil {
 		return Config{}, err;
@@ -44,7 +43,7 @@ func parseConfig(path string) (Config, error) {
 		return Config{}, err;
 	}
 
-	if err := yaml.Unmarshal(dat, &c); err != nil {
+	if err := kdl.Unmarshal(dat, &c); err != nil {
 		return Config{}, err;
 	}
 
