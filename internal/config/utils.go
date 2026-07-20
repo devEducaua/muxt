@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 func GetBaseDir() (string, error) {
@@ -41,6 +42,33 @@ func OpenEditor(path string) error {
 	}
 	err := RunExternalCommand(editor, path);
 	if err != nil {
+		return err;
+	}
+	return nil;
+}
+
+func ExpandTilde(p string) (string, error) {
+	if !strings.HasPrefix(p, "~") {
+		return p, nil;
+	}
+
+	home, err := os.UserHomeDir();
+	if err != nil {
+		return "", err;
+	}
+
+	trimmed := strings.TrimPrefix(p, "~");
+	path := filepath.Join(home, trimmed);
+
+	return path, nil;
+}
+
+func TmuxRun(args ...string) error {
+	cmd := exec.Command("tmux", args...);
+	cmd.Stdout = os.Stdout;
+	cmd.Stderr = os.Stderr;
+	cmd.Stdin = os.Stdin;
+	if err := cmd.Run(); err != nil {
 		return err;
 	}
 	return nil;
