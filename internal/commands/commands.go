@@ -2,45 +2,50 @@ package commands
 
 import (
 	"fmt"
-	"muxt/internal/config"
-	"muxt/internal/tmux"
 	"os"
 	"path/filepath"
+	"muxt/internal/tmux"
+	"muxt/internal/config"
+	"muxt/internal/utils"
 )
 
+
 func New(name string) error {
-	base, err := config.GetBaseDir();    
+	layoutsDir, err := config.GetLayoutsDir();
 	if err != nil {
 		return err;
 	}
-
-	// TODO: serialize this name
-	layoutsDirPath := filepath.Join(base, "layouts/");
-	if err := os.MkdirAll(layoutsDirPath, 0755); err != nil {
+	fileName := name+".kdl";
+	exists, err := utils.FileExistsInDir(fileName, layoutsDir);
+	if err != nil {
 		return err;
 	}
+	if exists {
+		return fmt.Errorf("layout: `%v` already exists, if you want to open it, use run `muxt edit %v`", name, name);
+	}
 
-	layoutPath := filepath.Join(layoutsDirPath, name+".yml");
+	layoutPath := filepath.Join(layoutsDir, name+".kdl");
 
 	// TODO: maybe turn this is a path, a separated file.
-	baseNewLayout := fmt.Sprintf(`
-# the name that the session will have
-name: %v
-# the working directory of your session
-root: ~/
-`, name)
+	// TODO: add comments in the example base file.
+	baseNewLayout := `
+layout %v {
+	root ~/
+
+	window {
+		pane "$EDITOR" 
+	}
+}
+	`
 
 	f, err := os.OpenFile(layoutPath, os.O_CREATE|os.O_EXCL|os.O_APPEND|os.O_RDWR, 0666);
 	if err != nil {
-		if os.IsExist(err) {
-			return fmt.Errorf("layout: `%v` already exists", name);
-		}
 		return err;
 	}
 	defer f.Close();
 	f.WriteString(baseNewLayout);
 
-	err = config.OpenEditor(layoutPath);
+	err = utils.OpenEditor(layoutPath);
 	if err != nil {
 		return fmt.Errorf("could not open $EDITOR: %v: but base was wrote to `%v`\n", err, layoutPath);
 	}
@@ -53,25 +58,17 @@ func Edit(name string) error {
 	if err != nil {
 		return err;
 	}
-
-	fileName := name+".yml";
-	// TODO: maybe permit the edit opens layouts that doesn't exists.
-	dirs, err := os.ReadDir(layoutsDir);
+	fileName := name+".kdl";
+	exists, err := utils.FileExistsInDir(fileName, layoutsDir);
 	if err != nil {
 		return err;
-	}
-	exists := false;
-	for _,e := range dirs {
-		if e.Name() == fileName {
-			exists = true;
-		}
 	}
 	if !exists {
 		return fmt.Errorf("layout: `%v` doesn't exists", name);
 	}
 
 	path := filepath.Join(layoutsDir, fileName);
-	err = config.OpenEditor(path);
+	err = utils.OpenEditor(path);
 	if err != nil {
 		return err;
 	}
@@ -86,15 +83,9 @@ func Start(name string) error {
 	}
 
 	fileName := name+".kdl";
-	dirs, err := os.ReadDir(layoutsDir);
+	exists, err := utils.FileExistsInDir(fileName, layoutsDir);
 	if err != nil {
 		return err;
-	}
-	exists := false;
-	for _,e := range dirs {
-		if e.Name() == fileName {
-			exists = true;
-		}
 	}
 	if !exists {
 		return fmt.Errorf("layout: `%v` doesn't exists", name);
