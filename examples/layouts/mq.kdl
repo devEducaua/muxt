@@ -1,0 +1,17 @@
+
+layout "mq" {
+    root "~/prj/mq"
+    attach #false
+
+    window "ed" {
+        // TODO: props can be splits and etc
+        pane "nvim ."
+    }
+    window "sh" {
+        pane "git log --oneline"
+    }
+
+    window "srv" {
+        pane "./bin/mq albumart --notify"
+    }
+}
