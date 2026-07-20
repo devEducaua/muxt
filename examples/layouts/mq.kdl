@@ -1,17 +1,17 @@
 
 layout "mq" {
     root "~/prj/mq"
-    attach #false
+    attach false
 
     window "ed" {
-        // TODO: props can be splits and etc
         pane "nvim ."
     }
     window "sh" {
-        pane "git log --oneline"
+        pane "ls -l"
+        pane split=h size=30 "ls -a"
     }
-
-    window "srv" {
-        pane "./bin/mq albumart --notify"
+    window "sv" {
+        pane "./bin/mq"
+        pane split=v size=50 "ls ./bin"
     }
 }

@@ -17,8 +17,12 @@ type Layout struct {
 
 type Window struct {
 	Name string `kdl:",arg"`
-	Cmd string `kdl:"cmd"`
-	// TODO: add panes later
+	Panes []Pane `kdl:"pane,multiple"`
+}
+
+type Pane struct {
+	Cmd string `kdl:",arg"`
+	Props map[string]interface{} `kdl:",props"`
 }
 
 func ParseLayout(contents []byte) (Layout, error) {
