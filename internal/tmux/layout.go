@@ -2,8 +2,6 @@ package tmux
 
 import (
 	"muxt/internal/config"
-	"os"
-	"strings"
 )
 
 func LayoutToTmux(layout config.Layout) error {
@@ -12,11 +10,11 @@ func LayoutToTmux(layout config.Layout) error {
 		return err;
 	}
 
-	home, err := os.UserHomeDir();
+	root, err := config.ExpandTilde(layout.Root);
 	if err != nil {
 		return err;
 	}
-	root := strings.Replace(layout.Root, "~", home, 1)
+
 	// TODO: verify if session is running before this, and go to he.
 	err = config.RunExternalCommand("tmux", "new-session", "-d", "-c", root, "-s", layout.Name);
 	if err != nil {
@@ -27,7 +25,15 @@ func LayoutToTmux(layout config.Layout) error {
 		if wIdx == 0 {
 			err = renameWindow(layout.Name, w.Name, conf.BaseIndex);
 		} else {
-			err = newWindow(layout.Name, w.Name, root, layout.Attach); 
+			paneRoot := root;
+			if propRoot, ok := w.Panes[0].Props["root"]; ok {
+				paneRoot = propRoot.(string);
+			}
+			paneRoot, err = config.ExpandTilde(paneRoot);
+			if err != nil {
+				return err;
+			}
+			err = newWindow(layout.Name, w.Name, paneRoot, layout.Attach); 
 		}
 
 		if err != nil {
@@ -38,17 +44,23 @@ func LayoutToTmux(layout config.Layout) error {
 				var size int64 = 50;
 				split := "v";
 
-				propSplit := p.Props["split"];
-				propSize := p.Props["size"];
-
-				if propSize != nil {
-					size = propSize.(int64);
-				}
-				if propSplit != nil {
+				if propSplit, ok := p.Props["split"]; ok {
 					split = propSplit.(string);
 				}
 
-				err = splitWindow(layout.Name, root, "-"+split, size, w.Name);
+				if propSize, ok := p.Props["size"]; ok {
+					size = propSize.(int64);
+				}
+
+				paneRoot, err := config.ExpandTilde(p.Props["root"].(string));
+				if err != nil {
+					return err;
+				}
+				if paneRoot == "" {
+					paneRoot = root;	
+				}
+
+				err = splitWindow(layout.Name, paneRoot, "-"+split, size, w.Name);
 				if err != nil {
 					return err;
 				}
@@ -63,3 +75,4 @@ func LayoutToTmux(layout config.Layout) error {
 
 	return nil;
 }
+
