@@ -21,7 +21,7 @@ func New(name string) error {
 		return err;
 	}
 	if exists {
-		return fmt.Errorf("layout: `%v` already exists, if you want to open it, use run `muxt edit %v`", name, name);
+		return fmt.Errorf("layout: `%v` already exists, if you want to open it, run `muxt edit %v`", name, name);
 	}
 
 	layoutPath := filepath.Join(layoutsDir, name+".kdl");
@@ -102,11 +102,22 @@ func Start(name string) error {
 		return err;
 	}
 
-	err = tmux.LayoutToTmux(l);
+	running, err := tmux.SessionIsRunning(l.Name);
 	if err != nil {
 		return err;
 	}
 
+	if !running {
+		err = tmux.LayoutToSession(l);
+		if err != nil {
+			return err;
+		}
+	}
+
+	err = tmux.GoToSession(l.Name);
+	if err != nil {
+		return err;
+	}
 	return nil;
 }
 
