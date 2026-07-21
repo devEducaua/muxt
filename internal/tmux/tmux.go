@@ -3,8 +3,42 @@ package tmux
 import (
 	"fmt"
 	"muxt/internal/utils"
+	"os"
+	"os/exec"
+	"strings"
 )
 
+func GoToSession(session string) error {
+	env := os.Getenv("TMUX");
+	var err error;
+	if env != "" {
+		err = utils.TmuxRun("switch-client", "-t", session);
+	} else {
+		err = utils.TmuxRun("attach-session", "-t", session);
+	}
+	if err != nil {
+		return err;
+	}
+
+	return nil;
+}
+
+func SessionIsRunning(session string) (bool, error) {
+	cmd := exec.Command("tmux", "list-sessions");
+	output, err := cmd.CombinedOutput();
+	if err != nil {
+		return false, err;
+	}
+
+	for l := range strings.SplitSeq(string(output), "\n") {
+		line := strings.TrimSpace(l);
+		if strings.HasPrefix(line, session+":") {
+			return true, nil;
+		}
+	}
+
+	return false, nil;
+}
 
 func splitWindow(session, root, direction string, size int64, window any) error {
 	if direction != "-h" && direction != "-v" {
@@ -19,11 +53,8 @@ func splitWindow(session, root, direction string, size int64, window any) error 
     return nil;
 }
 
-func newWindow(session, name, root string, attach bool) error {
-    command := []string{"tmux", "new-window", "-c", root, "-n", name, "-t", session};
-	if attach {
-		command = append(command, "-d");
-	}
+func newWindow(session, name, root string) error {
+    command := []string{"tmux", "new-window", "-d", "-c", root, "-n", name, "-t", session};
     err := utils.RunExternalCommand(command...);
     if err != nil {
         return err;
