@@ -6,18 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"muxt/internal/config"
 )
-
-
-func GetLayoutsDir() (string, error) {
-	base, err := config.GetBaseDir();
-	if err != nil {
-		return "", err;
-	}
-	p := filepath.Join(base, "layouts/");
-	return p, nil;
-}
 
 func OpenEditor(path string) error {
 	editor := os.Getenv("EDITOR");
