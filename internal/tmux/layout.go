@@ -5,7 +5,8 @@ import (
 	"muxt/internal/utils"
 )
 
-func LayoutToTmux(layout config.Layout) error {
+func LayoutToSession(layout config.Layout) error {
+
 	conf, err := config.GetConfig();
 	if err != nil {
 		return err;
@@ -16,8 +17,8 @@ func LayoutToTmux(layout config.Layout) error {
 		return err;
 	}
 
-	// TODO: verify if session is running before this, and go to he.
-	err = utils.RunExternalCommand("tmux", "new-session", "-d", "-c", root, "-s", layout.Name);
+	command := []string{"new-session", "-d", "-c", root, "-s", layout.Name};
+	err = utils.TmuxRun(command...);
 	if err != nil {
 		return err;
 	}
@@ -34,7 +35,7 @@ func LayoutToTmux(layout config.Layout) error {
 			if err != nil {
 				return err;
 			}
-			err = newWindow(layout.Name, w.Name, paneRoot, layout.Attach); 
+			err = newWindow(layout.Name, w.Name, paneRoot); 
 		}
 
 		if err != nil {
