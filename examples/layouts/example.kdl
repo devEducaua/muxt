@@ -1,0 +1,25 @@
+// INFO: this is a example layout
+// layout just receives a name as a argument, this is <name> you are going to use in the cli, like:
+// `muxt start <name>` and `muxt edit <name>`.
+// in this case: `muxt start app`.
+layout "app" {
+    // root is the start directory of the session.
+    root "~/projectsj/my-app"
+
+    // for each window that you want call a window block with it's name.
+    // inside window you declare your panes.
+    // `pane <opts> <cmd>
+    // possible options are: split, size and root.
+    window "editor" {
+        // you can call environment variable in the commands. the cmd is just the shell command that tmux will execute.
+        pane "$EDITOR"
+    }
+    window "server" {
+        // you declare multiple panes just like that:
+        // root is just the start directory of the pane.
+        pane root="~/.config/my-app" "nvim myapp.conf"
+        // split defaults to v and size default to 50.
+        // split are just the split direction, h or v, and size is the percentage of the split.
+        pane root="~/projects/my-app/server" split=v size=30 "./my-server --port 8080"
+    }
+}

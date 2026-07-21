@@ -1,0 +1,21 @@
+// this example layout is what i use to develop muxt.
+
+layout "muxt" {
+    root "~/prj/muxt"
+
+    window "vi" {
+        pane "nvim ."
+    }
+
+    window "cf" {
+        pane root="~/.config/muxt" "nvim ."
+    }
+
+    window "sh" {
+        pane "git log --oneline"
+    }
+
+    window "no" {
+        pane root="~/not/prj/muxt" "nvim ."
+    }
+}
