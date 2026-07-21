@@ -1,7 +1,6 @@
 
 layout "mq" {
     root "~/prj/mq"
-    attach false
 
     window "ed" {
         pane "nvim ."

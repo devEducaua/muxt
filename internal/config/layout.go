@@ -11,7 +11,6 @@ type Head struct {
 type Layout struct {
 	Name string `kdl:",arg"`
 	Root string `kdl:"root"`
-	Attach bool `kdl:"attach"`
 	Windows []Window `kdl:"window,multiple"`
 }
 
