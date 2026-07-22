@@ -11,6 +11,7 @@ type Head struct {
 type Layout struct {
 	Name string `kdl:",arg"`
 	Root string `kdl:"root"`
+	Attach bool `kdl:"attach"`
 	Windows []Window `kdl:"window,multiple"`
 }
 
@@ -26,6 +27,7 @@ type Pane struct {
 
 func ParseLayout(contents []byte) (Layout, error) {
 	var h Head;
+	h.Layout.Attach = true;
 	err := kdl.Unmarshal(contents, &h);
 	if err != nil {
 		return Layout{}, err;

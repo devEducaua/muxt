@@ -114,9 +114,11 @@ func Start(name string) error {
 		}
 	}
 
-	err = tmux.GoToSession(l.Name);
-	if err != nil {
-		return err;
+	if l.Attach {
+		err = tmux.GoToSession(l.Name);
+		if err != nil {
+			return err;
+		}
 	}
 	return nil;
 }
