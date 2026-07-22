@@ -10,17 +10,10 @@ import (
 
 func GoToSession(session string) error {
 	env := os.Getenv("TMUX");
-	var out string;
-	var err error;
 	if env != "" {
-		out, err = utils.TmuxRun("switch-client", "-t", session);
-	} else {
-		out, err = utils.TmuxRun("attach-session", "-t", session);
+		return utils.RunTmuxOpen("switch-client", "-t", session);
 	}
-	if err != nil {
-		return fmt.Errorf("%v: %v", out, err);
-	}
-	return nil;
+	 return utils.RunTmuxOpen("attach-session", "-t", session);
 }
 
 func SessionIsRunning(session string) (bool, error) {
