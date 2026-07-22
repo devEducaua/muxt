@@ -1,8 +1,10 @@
 package tmux
 
 import (
+	"fmt"
 	"muxt/internal/config"
 	"muxt/internal/utils"
+	"os"
 )
 
 func LayoutToSession(layout config.Layout) error {
@@ -17,10 +19,14 @@ func LayoutToSession(layout config.Layout) error {
 		return err;
 	}
 
-	command := []string{"new-session", "-d", "-c", root, "-s", layout.Name};
-	err = utils.TmuxRun(command...);
-	if err != nil {
+	if err := os.MkdirAll(root, 0755); err != nil {
 		return err;
+	}
+
+	command := []string{"new-session", "-d", "-c", root, "-s", layout.Name};
+	out, err := utils.TmuxRun(command...);
+	if err != nil {
+		return fmt.Errorf("%v: %v", out, err);
 	}
 
 	for wIdx, w := range layout.Windows {
