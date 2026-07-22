@@ -10,22 +10,26 @@ import (
 
 func GoToSession(session string) error {
 	env := os.Getenv("TMUX");
+	var out string;
 	var err error;
 	if env != "" {
-		err = utils.TmuxRun("switch-client", "-t", session);
+		out, err = utils.TmuxRun("switch-client", "-t", session);
 	} else {
-		err = utils.TmuxRun("attach-session", "-t", session);
+		out, err = utils.TmuxRun("attach-session", "-t", session);
 	}
 	if err != nil {
-		return err;
+		return fmt.Errorf("%v: %v", out, err);
 	}
-
 	return nil;
 }
 
 func SessionIsRunning(session string) (bool, error) {
 	cmd := exec.Command("tmux", "list-sessions");
 	output, err := cmd.CombinedOutput();
+
+	if strings.HasPrefix(string(output), "no server running on ") {
+		return false, nil;
+	}
 	if err != nil {
 		return false, err;
 	}
