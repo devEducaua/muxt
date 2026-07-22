@@ -36,15 +36,15 @@ func ExpandTilde(p string) (string, error) {
 	return path, nil;
 }
 
-func TmuxRun(args ...string) error {
+func TmuxRun(args ...string) (string, error) {
 	cmd := exec.Command("tmux", args...);
-	cmd.Stdout = os.Stdout;
-	cmd.Stderr = os.Stderr;
-	cmd.Stdin = os.Stdin;
-	if err := cmd.Run(); err != nil {
-		return err;
+
+	bt, err := cmd.CombinedOutput();
+	if err != nil {
+		return string(bt), err;
 	}
-	return nil;
+
+	return string(bt), nil;
 }
 
 func RunExternalCommand(args ...string) error {
