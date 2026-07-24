@@ -22,3 +22,4 @@ uninstall:
 
 clean:
 	rm -r $(TARGETDIR)
+
