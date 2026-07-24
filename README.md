@@ -38,6 +38,16 @@ finally, to run the layout and create a session with it, use:
 muxt start <layout-name>
 ```
 
+you can copy already existing layouts:
+```sh
+muxt copy <layout-name> <layout-name2>
+```
+
+you list layouts with:
+```sh
+muxt list
+```
+
 ### writing layouts
 muxt uses the [kdl language](https://kdl.dev) to declare the layouts. see the [examples directory](./examples) for more.
 
