@@ -51,6 +51,21 @@ func handleCommandLineArgs(argv []string) error {
         if err != nil {
             return err;
         }
+	case "copy":
+		if len(argv) < 3 {
+			return errors.New("command: `copy` expects two arguments: <from> and <to>");
+		}
+        from := argv[1];
+        to := argv[2];
+        err := commands.Copy(from, to);
+        if err != nil {
+            return err;
+        }
+	case "list":
+        err := commands.List();
+        if err != nil {
+            return err;
+        }
 
 	default:
 		return fmt.Errorf("unknown command: `%v`", command);

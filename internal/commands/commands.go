@@ -1,14 +1,15 @@
 package commands
 
 import (
+	"errors"
 	"fmt"
+	"muxt/internal/config"
+	"muxt/internal/tmux"
+	"muxt/internal/utils"
 	"os"
 	"path/filepath"
-	"muxt/internal/tmux"
-	"muxt/internal/config"
-	"muxt/internal/utils"
+	"strings"
 )
-
 
 func New(name string) error {
 	layoutsDir, err := config.GetLayoutsDir();
@@ -119,6 +120,56 @@ func Start(name string) error {
 		if err != nil {
 			return err;
 		}
+	}
+	return nil;
+}
+
+func Copy(from, to string) error {
+	dir, err := config.GetLayoutsDir();
+	if err != nil {
+		return err;
+	}
+
+	dirs, err := os.ReadDir(dir);
+	if err != nil {
+		return err;
+	}
+
+	fromExists := false;
+	toExists := false;
+	for _,e := range dirs {
+		switch e.Name() {
+		case from:
+			fromExists = true;
+		case to:
+			toExists = true;
+		}
+	}
+
+	if !fromExists {
+		return errors.New("cannot copy a layout that doesn't exists");
+	}
+	if toExists {
+		return errors.New("cannot copy to a layout that already exists");
+	}
+
+	return nil;
+}
+
+func List() error {
+	dir, err := config.GetLayoutsDir();
+	if err != nil {
+		return err;
+	}
+
+	dirs, err := os.ReadDir(dir);
+	if err != nil {
+		return err;
+	}
+
+	for _,e := range dirs {
+		name := strings.TrimSuffix(e.Name(), ".kdl");
+		fmt.Printf("%v\n", name);
 	}
 	return nil;
 }
