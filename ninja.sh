@@ -12,8 +12,6 @@ append() {
 append "
 target = muxt
 builddir = build
-prefix = /usr/local
-bindir = \$prefix/bin
 
 rule mk
     command = mkdir -p \$out
@@ -23,11 +21,7 @@ rule go
     command = go build -o \$out cmd/main.go
     description = GO \$out
 
-rule install
-    command = cp \$builddir/\$target \$out
-
 build \$builddir: mk
-build \$bindir/\$target: install
 "
 
 files=$(fd -e go | tr '\n' ' ')
