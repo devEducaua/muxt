@@ -4,27 +4,26 @@ import (
 	"fmt"
 	"muxt/internal/utils"
 	"os"
-	"os/exec"
 	"strings"
 )
 
 func GoToSession(session string) error {
 	env := os.Getenv("TMUX");
 	if env != "" {
-		return utils.RunTmuxOpen("switch-client", "-t", session);
+		return utils.RunTmuxCommand("switch-client", "-t", session);
 	}
-	 return utils.RunTmuxOpen("attach-session", "-t", session);
+	 return utils.RunTmuxCommand("attach-session", "-t", session);
 }
 
 func SessionIsRunning(session string) (bool, error) {
-	cmd := exec.Command("tmux", "list-sessions");
-	output, err := cmd.CombinedOutput();
+
+	output, err := utils.RunTmuxCommandWithOutput("list-sessions");
+	if err != nil {
+		return false, err;
+	}
 
 	if strings.HasPrefix(string(output), "no server running on ") {
 		return false, nil;
-	}
-	if err != nil {
-		return false, err;
 	}
 
 	for l := range strings.SplitSeq(string(output), "\n") {
@@ -42,8 +41,8 @@ func splitWindow(session, root, direction string, size int64, window any) error 
 		return fmt.Errorf("invalid direction to split window: `%v`", direction);
 	}
 
-	command := []string{"tmux", "split-window", "-c", root, "-t", fmt.Sprintf("%v:%v", session, window), direction, "-p", fmt.Sprintf("%v", size)};
-    err := utils.RunExternalCommand(command...);
+	command := []string{"split-window", "-c", root, "-t", fmt.Sprintf("%v:%v", session, window), direction, "-p", fmt.Sprintf("%v", size)};
+    err := utils.RunTmuxCommand(command...);
     if err != nil {
         return err;
     }
@@ -51,8 +50,8 @@ func splitWindow(session, root, direction string, size int64, window any) error 
 }
 
 func newWindow(session, name, root string) error {
-    command := []string{"tmux", "new-window", "-d", "-c", root, "-n", name, "-t", session};
-    err := utils.RunExternalCommand(command...);
+    command := []string{"new-window", "-d", "-c", root, "-n", name, "-t", session};
+    err := utils.RunTmuxCommand(command...);
     if err != nil {
         return err;
     }
@@ -60,8 +59,8 @@ func newWindow(session, name, root string) error {
 }
 
 func renameWindow(session, name string, idx any) error {
-	command := []string{"tmux", "rename-window", "-t", fmt.Sprintf("%v:%v", session, idx), name};
-    err := utils.RunExternalCommand(command...);
+	command := []string{"rename-window", "-t", fmt.Sprintf("%v:%v", session, idx), name};
+    err := utils.RunTmuxCommand(command...);
     if err != nil {
         return err;
     }
@@ -69,8 +68,8 @@ func renameWindow(session, name string, idx any) error {
 }
 
 func sendKeys(session string, window any, paneIndex int, keys string) error {
-    command := []string{"tmux", "send-keys", "-t", fmt.Sprintf("%v:%v.%v", session, window, paneIndex), keys, "C-m"};
-    err := utils.RunExternalCommand(command...);
+    command := []string{"send-keys", "-t", fmt.Sprintf("%v:%v.%v", session, window, paneIndex), keys, "C-m"};
+    err := utils.RunTmuxCommand(command...);
     if err != nil {
         return err;
     }

@@ -36,7 +36,7 @@ func ExpandTilde(p string) (string, error) {
 	return path, nil;
 }
 
-func RunTmuxCommand(args ...string) (string, error) {
+func RunTmuxCommandWithOutput(args ...string) (string, error) {
 	cmd := exec.Command("tmux", args...);
 
 	bt, err := cmd.CombinedOutput();
@@ -47,19 +47,11 @@ func RunTmuxCommand(args ...string) (string, error) {
 	return string(bt), nil;
 }
 
-func RunTmuxOpen(args ...string) error {
-	cmd := exec.Command("tmux", args...);
-	cmd.Stdout = os.Stdout;
-	cmd.Stderr = os.Stderr;
-	cmd.Stdin = os.Stdin;
-	if err := cmd.Run(); err != nil {
-		return err;
-	}
-	return nil;
+func RunTmuxCommand(args ...string) error {
+	return RunExternalCommand("tmux", args...);
 }
 
-// TODO: duplicated code
-func RunExternalCommand(args ...string) error {
+func RunExternalCommand(bin string, args ...string) error {
 	cmd := exec.Command(args[0], args[1:]...);
 	cmd.Stdout = os.Stdout;
 	cmd.Stderr = os.Stderr;

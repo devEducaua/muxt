@@ -24,7 +24,7 @@ func LayoutToSession(layout config.Layout) error {
 	}
 
 	command := []string{"new-session", "-d", "-c", root, "-s", layout.Name};
-	out, err := utils.RunTmuxCommand(command...);
+	out, err := utils.RunTmuxCommandWithOutput(command...);
 	if err != nil {
 		return fmt.Errorf("%v: %v", out, err);
 	}
