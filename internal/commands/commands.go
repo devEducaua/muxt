@@ -139,9 +139,9 @@ func Copy(from, to string) error {
 	toExists := false;
 	for _,e := range dirs {
 		switch e.Name() {
-		case from:
+		case from+".kdl":
 			fromExists = true;
-		case to:
+		case to+".kdl":
 			toExists = true;
 		}
 	}
