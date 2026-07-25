@@ -153,6 +153,25 @@ func Copy(from, to string) error {
 		return errors.New("cannot copy to a layout that already exists");
 	}
 
+	fromPath := filepath.Join(dir, from+".kdl");
+
+	dat, err := os.ReadFile(fromPath);
+	if err != nil {
+		return err;
+	}
+
+	toPath := filepath.Join(dir, to+".kdl");
+	f, err := os.OpenFile(toPath, os.O_CREATE|os.O_WRONLY, 0655);
+	if err != nil {
+		return err;
+	}
+	defer f.Close();
+	f.Write(dat);
+
+	if err := utils.OpenEditor(toPath); err != nil {
+		return err;
+	}
+
 	return nil;
 }
 
