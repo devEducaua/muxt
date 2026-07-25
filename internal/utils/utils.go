@@ -52,7 +52,7 @@ func RunTmuxCommand(args ...string) error {
 }
 
 func RunExternalCommand(bin string, args ...string) error {
-	cmd := exec.Command(args[0], args[1:]...);
+	cmd := exec.Command(bin, args...);
 	cmd.Stdout = os.Stdout;
 	cmd.Stderr = os.Stderr;
 	cmd.Stdin = os.Stdin;
