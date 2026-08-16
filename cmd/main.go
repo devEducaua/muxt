@@ -24,7 +24,7 @@ func handleCommandLineArgs(argv []string) error {
 	command := argv[0];
 
 	switch command {
-	case "new":
+	case "new", "nw":
         if len(argv) < 2 {
             return errors.New("command: `new` expects argument for layout name");
         }
@@ -33,7 +33,7 @@ func handleCommandLineArgs(argv []string) error {
         if err != nil {
             return err;
         }
-	case "edit":
+	case "edit", "ed":
         if len(argv) < 2 {
             return errors.New("command: `new` expects argument for layout name");
         }
@@ -42,7 +42,7 @@ func handleCommandLineArgs(argv []string) error {
         if err != nil {
             return err;
         }
-	case "start":
+	case "start", "st":
         if len(argv) < 2 {
             return errors.New("command: `start` expects argument for layout name");
         }
@@ -51,7 +51,7 @@ func handleCommandLineArgs(argv []string) error {
         if err != nil {
             return err;
         }
-	case "copy":
+	case "copy", "cp":
 		if len(argv) < 3 {
 			return errors.New("command: `copy` expects two arguments: <from> and <to>");
 		}
@@ -61,7 +61,7 @@ func handleCommandLineArgs(argv []string) error {
         if err != nil {
             return err;
         }
-	case "list":
+	case "list", "ls":
         err := commands.List();
         if err != nil {
             return err;
