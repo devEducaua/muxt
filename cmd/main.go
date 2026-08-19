@@ -35,7 +35,7 @@ func handleCommandLineArgs(argv []string) error {
         }
 	case "edit", "ed":
         if len(argv) < 2 {
-            return errors.New("command: `new` expects argument for layout name");
+            return errors.New("command: `edit` expects argument for layout name");
         }
         name := argv[1];
         err := commands.Edit(name);
