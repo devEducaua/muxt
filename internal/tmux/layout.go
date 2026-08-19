@@ -34,8 +34,10 @@ func LayoutToSession(layout config.Layout) error {
 			err = renameWindow(layout.Name, w.Name, conf.BaseIndex);
 		} else {
 			paneRoot := root;
-			if propRoot, ok := w.Panes[0].Props["root"]; ok {
-				paneRoot = propRoot.(string);
+			if len(w.Panes) > 0 {
+				if propRoot, ok := w.Panes[0].Props["root"]; ok {
+					paneRoot = propRoot.(string);
+				}
 			}
 			paneRoot, err = utils.ExpandTilde(paneRoot);
 			if err != nil {

@@ -16,7 +16,6 @@ func main() {
 }
 
 func handleCommandLineArgs(argv []string) error {
-
 	if len(argv) < 1 {
 		return nil;
 	}
